@@ -1,6 +1,6 @@
 {
     "name": "sl-vue-tree-next",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "description": "draggable tree vue component",
     "browserslist": "> 0.25%, not dead",
     "type": "module",

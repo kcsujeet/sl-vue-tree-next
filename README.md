@@ -208,6 +208,10 @@ slVueTree.traverse((node, nodeModel, path) => {
 [see CONTRIBUTING.md](CONTRIBUTING.md)
 
 # Changelog
+v0.0.14
+- add support for touch devices
+- fix multi-select prop typo
+
 v0.0.13
 - fixes duplicate node issue when moving multiple nodes
 - uses deep merge to update node when using updateNode function
