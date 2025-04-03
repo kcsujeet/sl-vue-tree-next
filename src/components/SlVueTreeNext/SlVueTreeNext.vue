@@ -4,7 +4,9 @@
         class="sl-vue-tree-next"
         :class="{ 'sl-vue-tree-next-root': isRoot }"
         @mousemove="onMousemoveHandler"
+        @touchmove="onMousemoveHandler"
         @mouseleave="onMouseleaveHandler"
+        @touchcancel="onMouseleaveHandler"
     >
         <div ref="nodes" class="sl-vue-tree-next-nodes-list">
             <div
@@ -31,7 +33,9 @@
                 <div
                     class="sl-vue-tree-next-node-item"
                     @mousedown="onNodeMousedownHandler($event, node)"
+                    @touchstart="onNodeMousedownHandler($event, node)"
                     @mouseup="onNodeMouseupHandler($event, node)"
+                    @touchend="onNodeMouseupHandler($event, node)"
                     @contextmenu="emitNodeContextmenu(node, $event)"
                     @dblclick="emitNodeDblclick(node, $event)"
                     @click="emitNodeClick(node, $event)"
@@ -400,7 +404,7 @@ const onDragEndHandler = (node, event) => {
     console.log('onDragEndHandler', node, event)
 }
 
-const select = (path, addToSelection = false, event: MouseEvent | null = null) => {
+const select = (path, addToSelection = false, event: MouseEvent | TouchEvent | null = null) => {
     const multiselectKeys = Array.isArray(props.multiselectKey) ? props.multiselectKey : [props.multiselectKey]
     const multiselectKeyIsPressed = event && !!multiselectKeys.find((key) => event[key])
     addToSelection = (multiselectKeyIsPressed || addToSelection) && props.allowMultiselect
@@ -441,6 +445,12 @@ const onMousemoveHandler = (event) => {
     }
 
     if (preventDrag.value) return
+
+    if (event.type === 'touchmove') {
+        event.preventDefault()
+        event.clientX = event.touches[0].clientX
+        event.clientY = event.touches[0].clientY
+    }
 
     const initialDraggingState = isDragging.value
     const dragging =
@@ -549,6 +559,12 @@ const onMouseleaveHandler = (event) => {
     if (!isRoot.value || !isDragging.value) return
     const $root = getRoot().ref.value
     const rootRect = $root.getBoundingClientRect()
+
+    if (event.type === 'touchcancel') {
+        event.clientX = lastMousePos.value.x
+        event.clientY = lastMousePos.value.y
+    }
+
     if (event.clientY >= rootRect.bottom) {
         const nodesCopy = structuredClone(currentNodes.value)
         setCursorPosition({ node: nodesCopy[0], placement: 'after' })
@@ -633,7 +649,7 @@ const comparePaths = (path1, path2) => {
 
 const onNodeMousedownHandler = (event, node) => {
     // handle only left mouse button
-    if (event.button !== 0) return
+    if (event.type == 'mousedown' && event.button !== 0) return
 
     if (!isRoot.value) {
         getRoot().onNodeMousedownHandler(event, node)
@@ -666,9 +682,9 @@ const onDocumentMouseupHandler = (event) => {
     if (isDragging.value) onNodeMouseupHandler(event)
 }
 
-const onNodeMouseupHandler = (event: MouseEvent, targetNode: TreeNode<T> | null = null) => {
+const onNodeMouseupHandler = (event, targetNode: TreeNode<T> | null = null) => {
     // handle only left mouse button
-    if (event.button !== 0) return
+    if (event.type == 'mouseup' && event.button !== 0) return
 
     if (!isRoot.value) {
         getRoot().onNodeMouseupHandler(event, targetNode)
