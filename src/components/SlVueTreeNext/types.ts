@@ -48,7 +48,7 @@ export interface SlVueTreeProps<T> {
     parentContext?: Context<T>
     rootContext?: any
     allowToggleBranch?: boolean
-    multiSelectKey? : MultiSelectKey[]
+    multiselectKey? : MultiSelectKey[]
     scrollAreaHeight?: number
     maxScrollSpeed?: number
 }
