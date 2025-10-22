@@ -1,3 +1,5 @@
+> NOTE: This library is not maintained. This is only vue-3 version of `sl-vue-tree` that I ported for my personal use case. No new features will be added or bug fixes will be made.
+
 # sl-vue-tree-next
 
 Vue3 supported version of sl-vue-tree. A customizable draggable tree component for Vue.js.
